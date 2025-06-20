@@ -13,9 +13,9 @@
     <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
 item.deleted %]">
       <td>
-        <a href="[% base %]event/view/[% item.id %]"><img src="[% base %]static/images/view.png"></a>
-        <a href="[% base %]event/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
-        <a href="[% base %]event/delete/[% item.id %]" onclick="return
+        <a href="[% base %]events/view/[% item.id %]"><img src="[% base %]static/images/view.png"></a>
+        <a href="[% base %]events/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
+        <a href="[% base %]events/delete/[% item.id %]" onclick="return
             confirm('Delete event?')"><img src="[% base %]static/images/delete.png"></a>
       </td>
       <td>[% date.format(item.pubdate, '%d. %b. %Y') %]</td>
