@@ -1,0 +1,3 @@
+New:
+<a href="[% base %]locations/add">Location</a> &middot;
+<a href="[% base %]events/add">Event</a>

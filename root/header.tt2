@@ -1,0 +1,18 @@
+<body>
+  <div id="menu">
+    <a href="[% base %]">Start</a> &middot;
+    <a href="[% base %]locations">Locations</a> &middot;
+    <a href="[% base %]events">Events</a> &middot;
+    [% IF c.user %]
+      [% IF c.check_user_roles('Administrator') %]
+        <a href="[% base %]masterdata">Stammdaten</a> &middot;
+        <a href="[% base %]administration">Administration</a> &middot;
+      [% END %]
+      <a href="[% base %]auth/logout">Logout</a> 
+    [% ELSE %]
+      <a href="[% base %]auth/login">Login</a>
+    [% END %] 
+  </div>
+
+  [% IF submenu %]<div id="submenu">[% PROCESS $submenu %]</div>[% END %]
+

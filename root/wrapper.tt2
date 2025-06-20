@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+
+[% INCLUDE meta.tt2 %]
+[% INCLUDE header.tt2 %] 
+
+[% msg = c.flash.msg ; IF msg %]
+<div id="msg">[% msg %]</div>
+[% END %]
+
+<div id="content" class="[% content_class %]">
+ <h1>[% title OR c.config.default_title | html %]</h1>
+ <br />
+ [% content %]
+</div>
+        
+[% INCLUDE footer.tt2 %]

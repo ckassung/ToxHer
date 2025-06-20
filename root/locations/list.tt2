@@ -1,0 +1,29 @@
+<h2>List all locations with events</h2>
+
+<table width="100%" class="sortable">
+  <tr>
+    <th class="nosort">&nbsp;</th>
+    <th class="sortasc">Address</th>
+    <th>Coordinates</th>
+    <th>Rating</th>
+  </tr>
+  [% FOREACH item IN list %]
+    <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
+item.deleted %]">
+      <td>
+        <a href="[% base %]location/view/[% item.id %]"><img src="[% base %]static/images/view.png"></a>
+        <a href="[% base %]location/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
+        <a href="[% base %]location/delete/[% item.id %]" onclick="return confirm('Delete institution?')"><img src="[% base %]static/images/delete.png"></a>
+      </td>
+      <td>[% item.address | html %]</td>
+      <td><a href="https://map.safecast.org/?y=[% item.get_column('lng')
+                 %]&x=[% item.get_column('lat') %]"
+             target="_blank">Safecast</a> | <a
+             href="https://geohack.toolforge.org/geohack.php?language=de&params=[% item.get_column('lng')
+                 %]_N_[% item.get_column('lat') %]_E_dim:28300"
+             target="_blank">GeoHack</a></td>
+      <td>[% item.rating %]</td>
+    </tr>
+  [% END %]
+</table>
+

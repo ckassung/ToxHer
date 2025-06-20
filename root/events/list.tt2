@@ -1,0 +1,27 @@
+[% USE date %]
+
+<h2>List of all documented events</h2>
+
+<table width="100%" class="sortable">
+  <tr>
+    <th class="nosort">&nbsp;</th>
+    <th class="sortasc">Date</th>
+    <th class="sortasc">Title</th>
+    <th class="nosort">Source</th>
+  </tr>
+  [% FOREACH item IN list %]
+    <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
+item.deleted %]">
+      <td>
+        <a href="[% base %]event/view/[% item.id %]"><img src="[% base %]static/images/view.png"></a>
+        <a href="[% base %]event/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
+        <a href="[% base %]event/delete/[% item.id %]" onclick="return
+            confirm('Delete event?')"><img src="[% base %]static/images/delete.png"></a>
+      </td>
+      <td>[% date.format(item.pubdate, '%d. %b. %Y') %]</td>
+      <td>[% item.title | html %]</td>
+      <td>[% item.source %]</td>
+    </tr>
+  [% END %]
+</table>
+
