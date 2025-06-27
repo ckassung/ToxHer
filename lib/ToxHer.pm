@@ -27,6 +27,7 @@ use Catalyst qw/
 
     FillInForm
     FormValidator
+    Message
 /;
 
 extends 'Catalyst';

@@ -1,0 +1,25 @@
+[% USE date %]
+[%- manip = date.manip -%]
+
+<table>
+  <tr class="listdarkbg">
+    <td>Date:</td>
+    <td>[% manip.UnixDate( item.pubdate, "%e %b %Y" ) %]</td>
+  </tr>
+  <tr class="listlightbg">
+    <td>Location:</td>
+    <td>[% location.address | html %]</td>
+  </tr>
+ <tr class="listdarkbg">
+    <td>Title:</td>
+    <td>[% item.title | html %]</td>
+  </tr>
+  <tr class="listlightbg">
+    <td>Source:</td>
+    <td>[% item.source | html %]</td>
+  </tr>
+  <tr class="listdarkbg">
+    <td>Abstract:</td>
+    <td>[% item.body | html_line_break %]</td>
+  </tr>
+</table>

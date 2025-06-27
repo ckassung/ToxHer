@@ -1,7 +1,6 @@
-[% USE date %]
-
 <h2>List of all documented events</h2>
 
+[% IF list.size > 0 %]
 <table width="100%" class="sortable">
   <tr>
     <th class="nosort">&nbsp;</th>
@@ -10,18 +9,21 @@
     <th class="nosort">Source</th>
   </tr>
   [% FOREACH item IN list %]
-    <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
+  [%- USE date -%]
+  [%- manip = date.manip -%]
+  <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
 item.deleted %]">
-      <td>
-        <a href="[% base %]events/view/[% item.id %]"><img src="[% base %]static/images/view.png"></a>
-        <a href="[% base %]events/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
-        <a href="[% base %]events/delete/[% item.id %]" onclick="return
-            confirm('Delete event?')"><img src="[% base %]static/images/delete.png"></a>
+    <td>
+      <a href="#" onclick="window.open('[% base %]events/view/[% item.id %]', 'event', 'width=600,height=800,scrollbar=yes'); return false;"><img src="[% base %]static/images/view.png" alt="View" title="View"></a>
+      <a href="[% base %]events/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
+      <a href="[% base %]events/delete/[% item.id %]" onclick="return confirm('Delete event?')"><img src="[% base %]static/images/delete.png"></a>
       </td>
-      <td>[% date.format(item.pubdate, '%d. %b. %Y') %]</td>
+      <td>[% manip.UnixDate( item.pubdate, "%e %b %Y" ) %]</td>
       <td>[% item.title | html %]</td>
       <td>[% item.source %]</td>
     </tr>
   [% END %]
 </table>
-
+[% ELSE %]
+<p>No event in database.</p>
+[% END %]

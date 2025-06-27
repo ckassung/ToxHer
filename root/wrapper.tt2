@@ -2,16 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
 
 [% INCLUDE meta.tt2 %]
-[% INCLUDE header.tt2 %] 
+<body>
+[% UNLESS popup %][% INCLUDE header.tt2 %][% END %]
 
-[% msg = c.flash.msg ; IF msg %]
-<div id="msg">[% msg %]</div>
-[% END %]
+  [%- msg = c.flash.msg ; IF msg %]
+  <div id="msg">[% msg %]</div>
+  [% END -%]
 
-<div id="content" class="[% content_class %]">
- <h1>[% title OR c.config.default_title | html %]</h1>
- <br />
- [% content %]
-</div>
-        
+  <div id="content" class="[% content_class %]">
+    <h1>[% title OR c.config.default_title | html %]</h1>
+    <br />
+    [% content -%]
+  </div>
+
+</body>
 [% INCLUDE footer.tt2 %]
+</html>

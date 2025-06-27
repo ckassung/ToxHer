@@ -1,4 +1,3 @@
-<body>
   <div id="menu">
     <a href="[% base %]">Start</a> &middot;
     <a href="[% base %]locations">Locations</a> &middot;
@@ -9,10 +8,13 @@
         <a href="[% base %]administration">Administration</a> &middot;
       [% END %]
       <a href="[% base %]auth/logout">Logout</a> 
-    [% ELSE %]
+    [% ELSE -%]
       <a href="[% base %]auth/login">Login</a>
-    [% END %] 
+    [%- END %] 
   </div>
 
-  [% IF submenu %]<div id="submenu">[% PROCESS $submenu %]</div>[% END %]
-
+  [%- IF submenu -%]
+  <div id="submenu">
+    [%- PROCESS $submenu -%]
+  </div>
+  [%- END -%]

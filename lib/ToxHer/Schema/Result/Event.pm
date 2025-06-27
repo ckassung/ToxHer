@@ -134,6 +134,11 @@ __PACKAGE__->belongs_to(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1BdnU6fVe/Y/CpU3Tyqnbg
 
 
+sub as_hash {
+    my $self = shift;
+    return { map { $_ => $self->$_ } $self->columns };
+}
+
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

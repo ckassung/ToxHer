@@ -1,6 +1,6 @@
 [% MACRO form_error(field) BLOCK %]
   [% IF c.form.invalid(field) %] <span class="formerror">[% c.form.msgs.$field %]</span><br />
-  [% ELSIF c.form.missing(field) %] <span class="formerror">Kein Wert angegeben!</span><br />[% END %]
+  [% ELSIF c.form.missing(field) %] <span class="formerror">Missing input!</span><br />[% END %]
 [% END %]
 [%- MACRO d(arg) BLOCK; USE Dumper; '<pre>' _ Dumper.dump_html(arg) _ '</pre>'; END -%]
 [%- MACRO fb BLOCK %]onfocus="oldbg=this.style.backgroundColor;this.style.backgroundColor='#F7F9FA';" onblur="this.style.backgroundColor=oldbg"[% END -%]
