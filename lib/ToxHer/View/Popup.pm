@@ -1,4 +1,4 @@
-package Themis::View::Popup;
+package ToxHer::View::Popup;
 use parent 'Catalyst::View::TT';
 
 use strict;

@@ -4,8 +4,12 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
+use Catalyst::Request::Upload;
+use Image::Magick;
 use Data::FormValidator::Constraints qw(:closures);
 use Date::Manip;
+
+use Data::Dump;
 
 =head1 NAME
 
@@ -52,18 +56,61 @@ sub view :Local {
     my ( $self, $c, $id ) = @_;
 
     my $item = $c->model( 'DB::Event' )->find( $id );
-
     if ( !$item ) {
         $c->msg->store( 'There is no event with such an id.' );
-        return $c->forward( 'edit' );
+        return $c->forward( 'list' );
+    }
+
+    my $pdf_data = $item->data;
+    my $pdf_name = $item->filename;
+
+    if ( !$pdf_data ) {
+        $c->msg->store( 'Failed to retrieve PDF from database.' );
+    } else {
+        if ($pdf_name) {
+            $pdf_name =~ s/\s//g;
+            $pdf_name =~ s/Ü/Ue/g;
+            $pdf_name =~ s/ü/ue/g;
+            $pdf_name =~ s/Ä/Ae/g;
+            $pdf_name =~ s/ä/ae/g;
+            $pdf_name =~ s/Ö/Oe/g;
+            $pdf_name =~ s/ö/oe/g;
+            $pdf_name =~ s/&ndash;/-/g;
+            $c->stash(pdf_name=>$pdf_name);
+
+            my $temp_dir = $c->config->{root} . "/temp/";
+            # Clean up older temporary files
+            foreach (<$temp_dir/*>) {
+                unlink $_;
+            }
+
+            ( my $file_name = $pdf_name ) =~ s/.pdf$//g;
+            my $pdf_path = $temp_dir . $file_name . '.pdf';
+            my $jpg_path = $temp_dir . $file_name . '.jpg';
+            mkdir $temp_dir;
+ 
+            open my $pdf_fh, '>', $pdf_path or die "Cannot open file $pdf_path: $!";
+            binmode $pdf_fh;
+            print $pdf_fh $pdf_data;
+            close $pdf_fh;
+
+            # Use Image::Magick to convert first page of the PDF to a JPG image
+            my $image = Image::Magick->new;
+            $image->Read($pdf_path . '[0]');  
+            $image->Write($jpg_path);
+
+            $c->stash(jpg_path=>$jpg_path);
+            $c->stash(file_name=>$file_name);
+        }
     }
 
     $c->stash(
-        item     => $item,
-        location => $item->location,
-        template => 'events/view.tt2',
-        popup    => 1,
-        title    => 'Show event\'s details',
+        item         => $item,
+        location     => $item->location,
+        template     => 'events/view.tt2',
+        # TODO: popup window _blank
+        # popup    => 1,
+        title        => 'Show event\'s details',
     );
 }
 
@@ -100,16 +147,20 @@ sub do_create :Local {
         $c->detach('create');
     }
 
-    # Retrieve values from form
+    # Retrieve data from form
     my $location = $c->request->params->{location};
+    my $upload   = $c->request->upload('file');
 
     # Create the event
     my $item = $c->model( 'DB::Event' )->create({
-        title       => scalar $c->form->valid('title'),
-        pubdate     => scalar UnixDate($c->form->valid( 'pubdate'), "%Y-%m-%d" ),
-        source      => scalar $c->form->valid('source'),
-        body        => scalar $c->form->valid('body'),
-        location_id => $location,
+        title        => scalar $c->form->valid('title'),
+        pubdate      => scalar UnixDate($c->form->valid( 'pubdate'), "%Y-%m-%d" ),
+        source       => scalar $c->form->valid('source'),
+        body         => scalar $c->form->valid('body'),
+        filename     => $upload->filename,
+        data         => $upload->slurp,
+        content_type => $upload->type,
+        location_id  => $location,
     });
 
     $c->msg->store('New event with title "' . $item->title . '" has been filed.');
@@ -167,12 +218,16 @@ sub do_edit :Local {
 
     # Retrieve values from form
     my $location = $c->request->params->{location};
+    my $upload   = $c->request->upload('file');
 
     unless ( $c->form->has_missing || $c->form->has_invalid ) {
         $c->stash->{item}->title( scalar $c->form->valid( 'title' ) );
         $c->stash->{item}->pubdate( scalar UnixDate ($c->form->valid( 'pubdate' ), "%Y-%m-%d") );
         $c->stash->{item}->source( scalar $c->form->valid( 'source' ) );
         $c->stash->{item}->body( scalar $c->form->valid( 'body' ) );
+        $c->stash->{item}->filename( $upload->filename );
+        $c->stash->{item}->data( $upload->slurp );
+        $c->stash->{item}->content_type( $upload->type );
         $c->stash->{item}->location_id( $location );
         $c->stash->{item}->update;
 
@@ -211,7 +266,7 @@ sub validate :Private {
     my ($self, $c) = @_;
 
     my $dfv = {
-        filters => 'trim',
+        filters  => 'trim',
         required => [qw(title)],
         optional => [qw(pubdate source body)],
         constraint_methods => {
@@ -246,6 +301,32 @@ sub constraint_pubdate {
 
         return 1;
     }
+}
+
+sub convert_pdf_to_jpg {
+    my ($c, $self, $pdf_blob) = @_;
+
+    # Create a temporary file path for the PDF and JPG image
+    my $temp_dir = $c->config->{root} . "/temp/";
+    my $pdf_path = "${temp_dir}temp.pdf";
+
+    # my $jpg_path = "${temp_dir}pdf_page.jpg";
+
+    # Write the PDF BLOB to a temporary file
+    # mkdir $temp_dir;
+    # open my $pdf_fh, '>', $pdf_path or die "Cannot open file $pdf_path: $!";
+    # binmode $pdf_fh;
+    # print $pdf_fh $pdf_blob;
+    # close $pdf_fh;
+
+    # Use Image::Magick to convert the first page of the PDF to a JPG image
+    # my $image = Image::Magick->new;
+    # $image->Read($pdf_path . '[0]');  # Read the first page of the PDF
+    # $image->Write($jpg_path);
+
+    # return $jpg_path if -e $jpg_path;
+
+    # return undef;
 }
 
 =encoding utf8

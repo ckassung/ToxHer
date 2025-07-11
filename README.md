@@ -43,7 +43,9 @@ classDiagram
     -date: DATE
     -source: TEXT
     -body: TEXT
-    -image:TEXT
+    -filename: TEXT
+    -data: BLOB
+    -content_type: TEXT
   }
 location "1" --o "n" event : a location has one or more toxic events
 ```

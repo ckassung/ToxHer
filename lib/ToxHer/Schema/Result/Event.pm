@@ -71,7 +71,17 @@ __PACKAGE__->table("event");
   data_type: 'text'
   is_nullable: 1
 
-=head2 image
+=head2 filename
+
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 data
+
+  data_type: 'blob'
+  is_nullable: 1
+
+=head2 content_type
 
   data_type: 'text'
   is_nullable: 1
@@ -91,7 +101,11 @@ __PACKAGE__->add_columns(
   { data_type => "text", is_nullable => 1 },
   "body",
   { data_type => "text", is_nullable => 1 },
-  "image",
+  "filename",
+  { data_type => "text", is_nullable => 1 },
+  "data",
+  { data_type => "blob", is_nullable => 1 },
+  "content_type",
   { data_type => "text", is_nullable => 1 },
 );
 
@@ -130,8 +144,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07052 @ 2025-06-19 20:29:36
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1BdnU6fVe/Y/CpU3Tyqnbg
+# Created by DBIx::Class::Schema::Loader v0.07052 @ 2025-07-05 12:31:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hKVEVYKsOTEbftHkqQvPrw
 
 
 sub as_hash {

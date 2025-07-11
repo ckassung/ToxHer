@@ -6,7 +6,9 @@ use strict;
 
 our $VERSION = '0.01';
 
-use NEXT;
+use Class::C3::Adopt::NEXT;
+no warnings 'Class::C3::Adopt::NEXT';
+
 use Log::Message;
 
 __PACKAGE__->mk_classdata('msg');

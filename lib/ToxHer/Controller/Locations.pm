@@ -4,6 +4,9 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
+use Geo::Parser::Text;
+use Data::Dumper;
+
 =head1 NAME
 
 ToxHer::Controller::Locations - Catalyst Controller
@@ -27,7 +30,7 @@ sub default :Private {
 
 =head2 list :Local
 
-Fetch all location objects and pass to location/list.tt in stash to be displayed.
+Fetch all location objects and pass to locations/list.tt2 in stash to be displayed.
 
 =cut
 
@@ -55,6 +58,104 @@ sub list :Local {
         template      => 'locations/list.tt2',
         title         => 'Locations',
     );
+}
+
+=head2 view :Local
+
+Show all details to the wanted location.
+
+=cut
+
+sub view :Local {
+    my ( $self, $c, $id ) = @_;
+
+    my $item = $c->model( 'DB::Location' )->find( $id );
+
+    if ( !$item ) {
+        $c->msg->store( 'There is no location with such an id.' );
+        return $c->forward( 'list' );
+    }
+
+    my $address = $item->address;
+    $address =~ /^([^0-9]+) ([0-9]+.*?)\, ([0-9]{5}) (.*)$/;
+    my ($street, $houseno, $zip, $city) = ($1, $2, $3, $4);
+
+    $c->stash(
+        item     => $item,
+        street   => $street,
+        houseno  => $houseno,
+        zip      => $zip,
+        city     => $city,
+        template => 'locations/view.tt2',
+        title    => 'Show location\'s details',
+    );
+}
+
+=head2 create :Local
+
+Display form to collect information for location to create.
+
+=cut
+
+sub create :Local {
+    my ( $self, $c ) = @_;
+    $c->stash(
+        content_class => 'medium',
+        action        => 'create',
+        template      => 'locations/form.tt2',
+        title         => 'Create a new location',
+    );
+}
+
+=head2 do_create :Local
+
+Take information from form and add to database.
+
+=cut
+
+sub do_create :Local {
+    my ( $self, $c ) = @_;
+
+    $c->forward( 'validate' );
+
+    if ($c->form->has_missing || $c->form->has_invalid) {
+        $c->detach( 'create' );
+    }
+
+    my $g = Geo::Parser::Text->new( 'https://geocode.xyz' );
+    
+    # Retrieve coordinates from form
+    my $street = $c->request->params->{street};
+    my $city   = $c->request->params->{city};
+
+    # Retrieve GPS-coordinates
+    my $geostr = $street . ', ' . $city;
+    my $georef = $g->geocode(locate=>$geostr, region=>'DE');
+
+    # Create the location
+    my $item = $c->model( 'DB::Location' )->create({
+        address   => $geostr,
+        longitude => $georef->{longt},
+        latitude  => $georef->{latt},
+        rating    => scalar $c->form->valid('rating'),
+    });
+
+    $c->res->redirect( $c->uri_for( '/locations/list' ) );
+}
+
+=head2 validate :Private
+
+=cut
+
+sub validate :Private {
+    my ($self, $c) = @_;
+
+    my $dfv = {
+        filters  => 'trim',
+        required => [qw(street city)],
+        optional => [qw(rating)],
+    };
+    $c->form($dfv);
 }
 
 =encoding utf8
