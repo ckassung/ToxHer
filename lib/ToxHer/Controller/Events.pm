@@ -39,7 +39,7 @@ Fetch all event objects and pass to events/list.tt2 in stash to be displayed.
 sub list :Local {
     my ( $self, $c ) = @_;
     $c->stash(
-        content_class => 'wide',
+        content_class => 'medium',
         list          => [ $c->model( 'DB::Event' )->search({}, {order_by => 'pubdate DESC'}) ],
         template      => 'events/list.tt2',
         title         => 'Events',

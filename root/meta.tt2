@@ -3,19 +3,13 @@
   <meta name="robots" content="noindex,nofollow,noarchive" />
   <link rel="stylesheet" href="[% base %]static/css/default.css" type="text/css" />
   <link rel="stylesheet" href="[% base %]static/css/leaflet.css" type="text/css" />
-  <link rel="stylesheet" href="[% base %]static/css/ol.css" type="text/css">
+  <link rel="stylesheet" href="[% base %]static/css/map.css" type="text/css">
   <script src="[% base %]static/jss/prototype.js" type="text/javascript"></script>
   <script src="[% base %]static/jss/scriptaculous.js" type="text/javascript"></script>
   <script src="[% base %]static/jss/fastinit.js" type="text/javascript"></script>
   <script src="[% base %]static/jss/tablesort.js" type="text/javascript"></script>
   <script src="[% base %]static/jss/leaflet.js" type="text/javascript"></script>
   <script src="[% base %]static/jss/ol.js"></script>
-  <style>
-    .map {
-      height: 400px;
-      width: 100%;
-    }
-  </style>
   <script type="text/javascript">
     SortableTable.setup({
       rowEvenClass : 'listdarkbg',

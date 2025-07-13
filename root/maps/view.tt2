@@ -1,0 +1,16 @@
+<h2>Map of all documented events</h2>
+
+<div id="map" class="ov-map"></div>
+<script type="text/javascript">
+    const locations = [
+        [% FOREACH location IN locations %]
+            ['[% base %]locations/view/[% location.id %]', [% location.longitude %] , [% location.latitude %] , '[%
+              location.address %]'],    
+        [% END %]
+    ];
+    var x = 13.2552372718261;                                                       
+    var y = 52.7511572566098; 
+    var z = 15;
+    var marker = '[% base %]static/images/marker.png';
+</script>
+<script type="module" src="[% base %]static/jss/overview.js"></script>

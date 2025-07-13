@@ -2,6 +2,7 @@
     <a href="[% base %]">Start</a> &middot;
     <a href="[% base %]locations">Locations</a> &middot;
     <a href="[% base %]events">Events</a> &middot;
+    <a href="[% base %]maps">Maps</a> &middot;
     [% IF c.user %]
       [% IF c.check_user_roles('Administrator') %]
         <a href="[% base %]masterdata">Stammdaten</a> &middot;
