@@ -1,0 +1,32 @@
+<form action="[% base %]locations/do_[% action %][% '/' _ item.id IF action == 'edit' %]" method="post" id="form">
+
+  <label for="street">Street:</label>
+  <input type="text" id="street" name="street" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">Format: street name, house number</span><br />
+    [% form_error('street') %]
+  </div>
+  <br />
+
+  <label for="city">City:</label>
+  <input type="text" id="city" name="city" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">Format: zip city</span><br />
+    [% form_error('city') %]
+  </div>
+  <br />
+
+  <label for="rating">Rating:</label>
+  <input type="text" class="small" id="rating" name="rating"/>
+  <div class="fieldinfo">
+    <span class="help">Format: 1&ndash;5</span><br />
+    [% form_error('rating') %]
+  </div>
+  <br />
+
+  <label for="submit">&nbsp;</label>
+  <input type="hidden" name="action" value="[% action %]" />
+  <input type="submit" id="submit" value="Save" />
+  <br />
+
+</form>

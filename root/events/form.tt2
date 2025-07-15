@@ -1,0 +1,57 @@
+<form action="[% base %]events/do_[% action %][% '/' _ item.id IF action == 'edit' %]" method="post" id="form" enctype="multipart/form-data">
+
+    [%- USE date -%]
+    [%- manip = date.manip -%]
+    [%- parsed = manip.ParseDate( item.pubdate ) -%]
+
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title" [% fb %]/>
+    <div class="fieldinfo">
+        [% form_error('title') %]
+    </div>
+    <br />
+
+    <label for="date">Date:</label>
+    <input type="text" id="pubdate" name="pubdate" [% fb %]/>
+    <div class="fieldinfo">
+        <span class="help">Format: DD.MM.JJJJ</span><br />
+        [% form_error('pubdate') %]
+    </div>
+    <br />
+
+    <label for="source">Source:</label>
+    <input type="text" id="source" name="source" [% fb %]/>
+    <div class="fieldinfo">
+        [% form_error('source') %]
+    </div>
+    <br />
+
+    <label for="abstract">Abstract:</label>
+    <textarea id="body" name="body" cols="60" rows="5" [% fb %]></textarea>
+    <div class="fieldinfo">
+        [% form_error('body') %]
+    </div>
+    <br />
+
+    <label for="location">Location:</label>
+    <select name="location" id="location" />
+        <option value="">Please select &hellip;</option>
+        [% FOREACH location IN locations %]
+        <option value="[% location.id %]">[% location.address | html %]</option>
+        [% END %]
+    </select>
+    <br />
+
+    <label for="file">File:</label>
+    <input type="file" name="file" />
+    <div class="fieldinfo">
+        [% form_error('file') %]
+    </div>
+    <br />
+
+    <label for="submit">&nbsp;</label>
+    <input type="hidden" name="action" value="[% action %]" />
+    <input type="submit" id="submit" value="Save" />
+    <br />
+
+</form>
