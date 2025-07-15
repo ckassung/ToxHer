@@ -8,9 +8,9 @@
         <a href="[% base %]masterdata">Stammdaten</a> &middot;
         <a href="[% base %]administration">Administration</a> &middot;
       [% END %]
-      <a href="[% base %]auth/logout">Logout</a> 
+      <a href="[% base %]logout">Logout</a> 
     [% ELSE -%]
-      <a href="[% base %]auth/login">Login</a>
+      <a href="[% base %]login">Login</a>
     [%- END %] 
   </div>
 

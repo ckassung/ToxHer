@@ -12,9 +12,14 @@
 
 Use the following command to build a toxher.db SQLite database:
 
-`$ sqlite3 toxher.db < schema.sql`
+`$ sqlite3 toxher.db < db/schema.sql`
 
-Before eventually using this command again delete toxher.db. Then run 
+Add the authentication schema to the toxher.db database:
+
+`$ sqlite3 toxher.db < db/auth.sql`
+
+Before eventually using this command again delete an existing toxher.db. Then
+run 
 
 `$ ./script/toxher_create.pl model DB DBIC::Schema ToxHer::Schema create=static naming=current use_namespaces=1 dbi:SQLite:toxher.db on_connect_do="PRAGMA foreign_keys = ON"`
 

@@ -28,10 +28,14 @@ ToxHer::Controller::Root - Root Controller for ToxHer
 
 sub auto :Private {
     my ( $self, $c ) = @_;
-    $c->stash(
-        content_class => 'medium',
-        submenu => 'submenu.tt2',
-    );
+    if ( $c->check_user_roles('admin') ){
+        $c->stash(
+            content_class => 'medium',
+            submenu => 'submenu.tt2',
+        );
+    } else {
+        $c->detach( '/auth/denied' );
+    }
     return 1;
 }
 
