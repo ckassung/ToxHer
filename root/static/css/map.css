@@ -1,0 +1,11 @@
+@import "static/css/ol.css";
+
+.dt-map {
+    min-width: 500px;
+    height: 400px;
+}
+
+.ov-map {
+    width: 100%;
+    height: 400px;
+}

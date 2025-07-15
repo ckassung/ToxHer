@@ -1,0 +1,35 @@
+<table>
+  <tr class="listdarkbg">
+    <td>Street:</td>
+    <td>[% street | html %]</td>
+  </tr>
+  <tr class="listlightbg">
+    <td>House no.:</td>
+    <td>[% houseno | html %]</td>
+  </tr>
+  <tr class="listdarkbg">
+    <td>ZIP:</td>
+    <td>[% zip | html %]</td>
+  </tr>
+  <tr class="listlightbg">
+    <td>City:</td>
+    <td>[% city | html %]</td>
+  </tr>
+  <tr class="listdarkbg">
+    <td>Rating:</td>
+    <td>[% IF item.rating > 0 %][% FOREACH i IN [1 .. item.rating ] %]*[% END %][% END %]</td>
+  </tr>
+  <tr class="listlightbg">
+    <td>Map:</td>
+    <td>
+      <div id="map" class="dt-map"></div>
+      <script type="text/javascript">
+        var x = [% item.longitude %];
+        var y = [% item.latitude %];
+        var z = 17;
+        var marker = '[% base %]static/images/marker.png';
+      </script> 
+      <script type="module" src="[% base %]static/jss/map.js"></script>
+    </td>
+  </tr>
+</table>
