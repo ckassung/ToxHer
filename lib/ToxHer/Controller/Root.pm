@@ -10,48 +10,69 @@ BEGIN { extends 'Catalyst::Controller' }
 #
 __PACKAGE__->config(namespace => '');
 
-=encoding utf-8
-
 =head1 NAME
 
 ToxHer::Controller::Root - Root Controller for ToxHer
 
 =head1 DESCRIPTION
 
-[enter your description here]
+Catalyst Controller.
 
 =head1 METHODS
 
-=head2 auto
-
-=cut
-
-sub auto :Private {
-    my ( $self, $c ) = @_;
-    if ( $c->check_user_roles('admin') ){
-        $c->stash(
-            content_class => 'medium',
-            submenu => 'submenu.tt2',
-        );
-    } else {
-        $c->detach( '/auth/denied' );
-    }
-    return 1;
-}
-
-=head2 index
+=head2 index :Path :Args(0)
 
 The root page (/)
 
 =cut
 
-sub index :Path :Args(0) {
+# sub index :Path :Args(0) {
+sub index :Private {
     my ( $self, $c ) = @_;
     $c->stash(
-        content_class => 'medium',
-        title    => 'Welcome to ToxHer',
-        template => 'start.tt2'
+        template      => 'start.tt2',
+        title         => 'Welcome to ToxHer',
     );
+}
+
+=head2 auto
+
+Check if there is a user and, if not, forward to login page
+
+=cut
+
+sub auto :Private {
+    my ($self, $c) = @_;
+
+    # Allow unauthenticated users to reach the login page. This
+    # allows unauthenticated users to reach any action in the Auth
+    # controller. To lock it down to a single action, we could use:
+    # if ($c->action eq $c->controller('Auth')->action_for('index'))
+    # to only allow unauthenticated access to the 'index' action we
+    # added above.
+    if ($c->controller eq $c->controller('Auth')) {
+        return 1;
+    }
+
+    # If a user doesn't exist, force login
+    if (!$c->user_exists) {
+
+        # Dump a log message to the development server debug output
+        $c->log->debug('***Root::auto User not found, forwarding to /login');
+
+        # Redirect the user to the start page
+        # $c->response->redirect($c->uri_for('/auth/login'));
+        $c->stash(
+            template      => 'start.tt2',
+            title         => 'Welcome to ToxHer',
+        );
+
+        # Return 0 to cancel 'post-auto' processing and prevent use of application
+        return 0;
+    }
+
+    # User found, so return 1 to continue with processing after this 'auto'
+    return 1;
 }
 
 =head2 default
@@ -75,7 +96,7 @@ Attempt to render a view, if needed.
 
 sub end :Private {
     my($self, $c) = @_;
-    $c->stash->{content_class} ||= 'narrow',
+    $c->stash->{content_class} ||= 'narrow';
 
     return 1 if $c->response->status =~ /^(?:3[0-9][0-9])|(?:204)$/;
     return 1 if $c->response->body;
@@ -83,6 +104,8 @@ sub end :Private {
     $c->forward('ToxHer::View::HTML') unless $c->res->output;
     $c->fillform( $c->stash->{form} ) if $c->stash->{form};
 }
+
+=encoding utf-8
 
 =head1 AUTHOR
 

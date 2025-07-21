@@ -21,8 +21,6 @@ use Catalyst::Runtime 5.80;
 use Catalyst qw/
     -Debug
     ConfigLoader
-    Static::Simple
-
     StackTrace
 
     Authentication
@@ -31,10 +29,11 @@ use Catalyst qw/
     Session
     Session::Store::File
     Session::State::Cookie
+    Static::Simple
 
     FillInForm
     FormValidator
-    Message
+    StatusMessage
 /;
 
 extends 'Catalyst';

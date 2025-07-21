@@ -1,0 +1,73 @@
+<form action="[% base %]user/do_[% action %][% '/' _ user.id IF action == 'edit' %]" method="post" id="form">
+
+  <label for="username">User name:</label>
+  [% IF action == 'create' %]
+  <input type="text" name="username" id="username" [% fb %]/>
+  [% ELSE %]
+    [% user.username | html %]
+  [% END %]
+  <div class="fieldinfo">
+    <span class="help">required</span><br />
+    [% form_error('username') %]
+  </div>
+  <br />
+
+  <label for="password">Password:</label>
+  <input type="password" id="password" name="password" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">required</span><br />
+    [% form_error('password') %]
+  </div>
+  <br />
+
+  <label for="password2">Password (re-type):</label>
+  <input type="password" id="password2" name="password2" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">required</span><br />
+    [% form_error('password') %]
+  </div>
+  <br />
+
+  <label for="email_address">E-mail address:</label>
+  <input type="text" id="email_address" name="email_address" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">required</span><br />
+    [% form_error('email_address') %]
+  </div>
+  <br />
+
+  <label for="first_name">First name:</label>
+  <input type="text" id="first_name" name="first_name" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">optional</span><br />
+    [% form_error('first_name') %]
+  </div>
+  <br />
+
+  <label for="last_name">Last name:</label>
+  <input type="text" id="last_name" name="last_name" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">optional</span><br />
+    [% form_error('last_name') %]
+  </div>
+  <br />
+
+  <label for="role">Role:</label>
+  <select name="role" id="role">
+    <option value="">chose &hellip;</option>
+    [% FOREACH role IN roles %]
+    <option value="[% role.id %]">[% role.role | html %]</option>
+    [% END %]
+  </select>
+  <div class="fieldinfo">
+    <span class="help">required</span><br />
+    [% form_error('role') %]
+  </div>
+  <br />
+
+  <label for="submit">&nbsp;</label>
+  <input type="hidden" name="action" value="[% action %]" />
+  <input type="submit" id="submit" value="Save" />
+  <br />
+
+</form>

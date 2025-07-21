@@ -1,12 +1,18 @@
-package ToxHer::Controller::Login;
+package ToxHer::Controller::Auth;
 use Moose;
 use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
+#
+# Sets the actions in this controller to be registered with no prefix
+# so they function identically to actions created in MyApp.pm
+#
+__PACKAGE__->config(namespace => '');
+
 =head1 NAME
 
-ToxHer::Controller::Login - Catalyst Controller
+ToxHer::Controller::Auth - Catalyst Controller
 
 =head1 DESCRIPTION
 
@@ -14,31 +20,30 @@ Catalyst Controller.
 
 =head1 METHODS
 
+=head2 login :Path
+
 Login logic.
 
 =cut
 
-=head2 index :Path :Args()
-
-=cut
-
-sub index :Path :Args(0) {
+sub login :Path('/auth/login') {
     my ( $self, $c ) = @_;
 
-    # Get the username and password from form
+    # Get username and password from form
     my $username = $c->request->params->{username};
     my $password = $c->request->params->{password};
+
     # If the username and password values were found in form
     if ($username && $password) {
         # Attempt to log the user in
         if ($c->authenticate({ username => $username,
                                password => $password  } )) {
-            # If successful, then let them use the application
+            # If successful, process to application
             $c->response->redirect($c->uri_for(
                 $c->controller('Events')->action_for('list')));
             return;
         } else {
-            # Set an error message
+            # Stay at login form and set error message
             $c->stash(error_msg => "Bad username or password.");
         }
     } else {
@@ -46,23 +51,54 @@ sub index :Path :Args(0) {
         $c->stash(error_msg => "Empty username or password.")
             unless ($c->user_exists);
     }
+
     # If either of above don't work out, send to the login page
-    $c->stash(template => 'login.tt2');
+    $c->stash(
+        content_class => 'narrow',
+        template      => 'auth/login.tt2',
+        title         => 'Authentifizierung',
+    );
 }
 
-=head2 index
+=head2 logout
 
-Logout logic.
+Logout logic
 
 =cut
 
-sub logout :Path :Args(0) {
-    my ( $self, $c ) = @_;
+sub logout :Path('/auth/logout') {
+    my ($self, $c) = @_;
 
     # Clear the user's state
     $c->logout;
+
     # Send the user to the starting point
     $c->response->redirect($c->uri_for('/'));
+}
+
+=head2 denied : Private
+
+TODO
+
+Zeigt die I<Zugriff verweigert>-Seite an. Gibt C<0> zurück,
+weil es andernorts in C<auto>-Actions benutzt wird.
+
+=cut
+
+sub denied :Private {
+    my ($self, $c) = @_;
+    if ( $c->user_exists ) {
+        $c->stash(
+            template => 'auth/access_denied.tt2',
+            title    => 'Access denied',
+        );
+    }
+    else {
+        $c->stash->{form}{path} = $c->req->path;
+        $c->forward('login');
+    }
+    # break the chain
+    return 0;
 }
 
 =encoding utf8

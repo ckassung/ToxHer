@@ -36,7 +36,6 @@ sub view :Local {
     my ( $self, $c ) = @_;
 
     $c->stash(
-        content_class => 'narrow',
         locations     => [ $c->model( 'DB::Location' )->search({}, {order_by => 'address ASC'}) ],
         template      => 'maps/view.tt2',
         title         => 'Maps',

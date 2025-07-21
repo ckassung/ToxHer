@@ -19,6 +19,16 @@ Catalyst Controller.
 
 =cut
 
+=head2 auto : Private
+
+=cut
+
+sub auto : Private {
+    my ($self, $c) = @_;
+    $c->stash->{submenu} = 'locations/menu';
+    return 1;
+}
+
 =head2 default :Private
 
 =cut
@@ -37,7 +47,6 @@ Fetch all location objects and pass to locations/list.tt2 in stash to be display
 sub list :Local {
     my ( $self, $c ) = @_;
     $c->stash(
-        content_class => 'narrow',
         list          => [ $c->model( 'DB::Location' )->search(undef, {
                             select => [
                                 'id',

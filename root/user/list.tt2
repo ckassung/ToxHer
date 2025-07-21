@@ -1,0 +1,45 @@
+<h2>All users</h2>
+
+<p><a href="[% base %]user/create">Add new user &hellip;</a></p>
+
+[% IF list.size == 0 %]
+  <p>No user in database.</p>
+  [% RETURN %]
+[% END %]
+
+<table class="sortable" style="width:100%">
+  <tr>
+    <th>&nbsp;</th>
+    <th>Username</th>
+    <th>Full name</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Status</th>
+  </tr>
+
+  [% FOREACH user IN list  %]
+  <tr class="list[% loop.count % 2 ? 'light' : 'dark' %]bg">
+    <td class="nowrap">
+      <a href="[% base %]user/edit/[% user.id | html %]"><img src="[% base %]static/images/edit.png" class="icon" alt="ändern" title="ändern" /></a>
+      <a onclick="return confirm('Delete user?')" href="[% base
+        %]user/delete/[% user.id | html %]"><img src="[% base
+        %]static/images/delete.png" class="icon" alt="delete" title="delete" /></a>
+    </td>
+    <td>
+      [% user.username | html %]
+    </td>
+    <td>
+      [% IF user.first_name || user.last_name %]
+        [% user.first_name _ ' ' _ user.last_name | html %]
+      [% END %]
+    </td>
+    <td>[% IF user.email_address %]<a href="mailto:[% user.email_address | html %]">[%
+        user.email_address | html %]</a>[% ELSE %]&nbsp;[% END %]</td>
+    <td>
+      [% roles.${ user.roles_rs.get_column('role_id').max } | html %]
+    </td>
+    <td style="text-align:center"><a href="[% base %]user/active_toggle/[%
+        user.id | html %]">[% IF user.active %]active[% ELSE %]--[% END %]</a></td>
+  </tr>
+  [% END %]
+</table>

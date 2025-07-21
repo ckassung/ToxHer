@@ -4,18 +4,17 @@
     <a href="[% base %]events">Events</a> &middot;
     <a href="[% base %]maps">Maps</a> &middot;
     [% IF c.user %]
-      [% IF c.check_user_roles('Administrator') %]
-        <a href="[% base %]masterdata">Stammdaten</a> &middot;
+      [% IF c.check_user_roles('admin') %]
         <a href="[% base %]administration">Administration</a> &middot;
       [% END %]
-      <a href="[% base %]logout">Logout</a> 
-    [% ELSE -%]
-      <a href="[% base %]login">Login</a>
+        <a href="[% base %]auth/logout">Logout</a> 
+      [% ELSE -%]
+        <a href="[% base %]auth/login">Login</a>
     [%- END %] 
   </div>
 
   [%- IF submenu -%]
   <div id="submenu">
-    [%- PROCESS $submenu -%]
+    [%- PROCESS "${submenu}.tt2" -%]
   </div>
   [%- END -%]

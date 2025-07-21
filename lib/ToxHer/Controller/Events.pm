@@ -21,12 +21,24 @@ Catalyst Controller.
 
 =head1 METHODS
 
+=head2 auto :Private
+
+=cut
+
+sub auto :Private {
+    my ($self, $c) = @_;
+
+    $c->stash->{submenu} = 'events/menu';
+    return 1;
+}
+
 =head2 default :Private
 
 =cut
 
 sub default :Private {
     my ( $self, $c ) = @_;
+
     $c->forward( 'list' );
 }
 
@@ -38,6 +50,7 @@ Fetch all event objects and pass to events/list.tt2 in stash to be displayed.
 
 sub list :Local {
     my ( $self, $c ) = @_;
+
     $c->stash(
         content_class => 'medium',
         list          => [ $c->model( 'DB::Event' )->search({}, {order_by => 'pubdate DESC'}) ],
@@ -122,6 +135,7 @@ Display form to collect information for event to create.
 
 sub create :Local {
     my ( $self, $c ) = @_;
+
     $c->stash(
         content_class => 'medium',
         action        => 'create',
@@ -249,16 +263,18 @@ sub delete :Local {
     my ( $self, $c, $id ) = @_;
 
     if ( $c->stash->{item} = $c->model( 'DB::Event' )->find( $id ) ) {
-        $c->msg->store('Event with title ' . $c->stash->{item}->title . ' has been removed.');
+        $c->stash(status_msg => 'Event "' . $c->stash->{item}->title . '" has been removed.');
         $c->stash->{item}->delete;
     }
     else {
-        $c->msg->store( 'There is no event with this id.' );
+        $c->stash(error_msg => 'There is no event with this id.' );
     }
     $c->forward( 'list' );
 }
 
 =head2 validate :Private
+
+Validate form data.
 
 =cut
 

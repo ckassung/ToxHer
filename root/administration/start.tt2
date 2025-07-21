@@ -1,0 +1,8 @@
+<p>
+This is the administration panel of ToxHer.
+</p>
+
+<ul>
+  <li><a href="[% base %]user">User</a>: User account management.</li>
+</ul>
+

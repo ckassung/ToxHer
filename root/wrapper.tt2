@@ -5,13 +5,17 @@
 <body>
 [% UNLESS popup %][% INCLUDE header.tt2 %][% END %]
 
-  [%- msg = c.flash.msg ; IF msg %]
-  <div id="msg">[% msg %]</div>
-  [% END -%]
-
   <div id="content" class="[% content_class %]">
-    <h1>[% title OR c.config.default_title | html %]</h1>
-    <br />
+  <h1>[% title OR c.config.default_title | html %]</h1>
+ 
+  [% IF status_msg %]
+  <div id="msg">[% status_msg %]</div>
+  [% END %]
+  [% IF error_msg %]
+  <div id="msg">Error: [% error_msg %]</div>
+  [% END %]
+
+  <br />
     [% content -%]
   </div>
 
