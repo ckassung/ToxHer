@@ -68,9 +68,6 @@ sub list :Local {
         template => 'user/list.tt2',
         title    => 'User account management',
     );
-    if ($c->req->param('getajax') and $c->stash->{created_user}) {
-        $c->stash->{template} = 'user/ajax_added.tt2';
-    }
 }
 
 =head2 create :Local
@@ -101,7 +98,6 @@ sub do_create :Local {
    my ($self, $c) = @_;
 
     $c->forward('validate');
-
     if ( $c->form->has_missing || $c->form->has_invalid ) {
         $c->log->_dump( $c->form );
         $c->detach('create');
@@ -123,6 +119,75 @@ sub do_create :Local {
 
     $c->stash(status_msg => 'New user "' . $c->form->valid('username') . '" has been filed.' );
     $c->forward( 'list' );
+}
+
+=head2 edit :Local
+
+Display form for editing an user.
+
+=cut
+
+
+sub edit :Local {
+    my ($self, $c, $id) = @_;
+
+    my $user = $c->model('DB::User')->find($id);
+    if (!$user) {
+        $c->detach('/object_not_found');
+    }
+
+    $c->stash(
+        content_class => 'medium',
+        action        => 'edit',
+        form          => {
+            email_address => $user->email_address,
+            first_name    => $user->first_name,
+            last_name     => $user->last_name,
+            role          => $user->roles->get_column('role_id')->max, # highest role
+        },
+        user     => $user,
+        roles    => [ $c->model('DB::Role')->search(undef, { order_by => 'role' }) ],
+        template => 'user/form.tt2',
+        title    => 'Edit user',
+    );
+}
+
+=head2 do_edit :Local
+
+Take information from form and change entry of database.
+
+=cut
+
+sub do_edit :Local {
+    my ($self, $c, $id) = @_;
+
+    my $user = $c->model('DB::User')->find($id);
+    if (!$user) {
+        $c->detach('/object_not_found');
+    }
+
+    $c->forward('validate');
+    if ( $c->form->has_missing || $c->form->has_invalid ) {
+        $c->log->_dump( $c->form );
+        $c->detach('edit');
+    }
+
+    $user->update({
+        password      => sha1_hex(scalar $c->form->valid('password')),
+        email_address => scalar $c->form->valid('email_address'),
+        first_name    => scalar $c->form->valid('first_name'),
+        last_name     => scalar $c->form->valid('last_name'),
+        active   => 1,# TODO
+    });
+
+    $c->model('DB::UserRole')->search({ user_id => $user->id })->delete;
+    my $role = $c->form->valid('role');
+    foreach my $level ( 1 .. $role ) {
+        $user->add_to_user_roles({ role_id => $level });
+    }
+
+    $c->stash(status_msg => 'User "' . $user->username . '" has been changed.');
+    $c->forward ( 'list' );
 }
 
 =head2 delete :Local
@@ -173,7 +238,7 @@ sub validate :Private {
     my ($self, $c) = @_;
 
     my $dfv = {
-        required => [qw/username email_address role/],
+        required => [qw/email_address role/],
         optional => [qw/first_name last_name/],
         filters  => 'trim',
         dependency_groups => {
@@ -183,6 +248,9 @@ sub validate :Private {
             role => qr/^[12]$/,
         }
     };
+    if ( $c->action->name eq 'do_create' ) {
+        push @{$dfv->{required}}, 'username';
+    }
     $c->form($dfv);
 }
 

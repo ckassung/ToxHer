@@ -36,27 +36,42 @@ title: Toxher DB schema
 ---
 classDiagram
   class location {
-    -id: INTEGER PRIMARY KEY
-    -adress: TEXT
-    -longitude: FLOAT
-    -latitude: FLOAT
+    -id:           INTEGER PRIMARY KEY
+    -adress:       TEXT
+    -longitude:    FLOAT
+    -latitude:     FLOAT
   }
   class event {
-    -id: INTEGER PRIMARY KEY
-    -location_id: INTEGER REFERENCES
-    -title: TEXT
-    -date: DATE
-    -source: TEXT
-    -body: TEXT
-    -filename: TEXT
-    -data: BLOB
+    -id:           INTEGER PRIMARY KEY
+    -location_id:  INTEGER REFERENCES
+    -title:        TEXT
+    -date:         DATE
+    -source:       TEXT
+    -body:         TEXT
+    -filename:     TEXT
+    -data:         BLOB
     -content_type: TEXT
   }
+  class user {
+    -id:           INTEGER PRIMARY KEY
+    -username      TEXT
+    -password      TEXT
+    -email_address TEXT
+    -first_name    TEXT
+    -last_name     TEXT
+    -active        INTEGER
+  }
+  class role {
+    -id:           INTEGER PRIMARY KEY
+    -role:         TEXT
+  }
+
 location "1" --o "n" event : a location has one or more toxic events
+user "n" --o "n" role : a user has one ore more roles, a role has one or more user
 ```
 
 ## TODOs
 
-SELECT load_extension('mod_spatialite');
-SELECT InitSpatialMetaData();
-SELECT AddGeometryColumn('location', 'geometry', 4326, 'POINT', 'XY');
+auth/validate
+- password eq password2
+- ch class users to class user

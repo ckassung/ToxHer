@@ -3,13 +3,13 @@
   <label for="username">User name:</label>
   [% IF action == 'create' %]
   <input type="text" name="username" id="username" [% fb %]/>
-  [% ELSE %]
-    [% user.username | html %]
-  [% END %]
   <div class="fieldinfo">
     <span class="help">required</span><br />
     [% form_error('username') %]
   </div>
+  [% ELSE %]
+    [% user.username | html %]
+  [% END %]
   <br />
 
   <label for="password">Password:</label>
@@ -54,9 +54,9 @@
 
   <label for="role">Role:</label>
   <select name="role" id="role">
-    <option value="">chose &hellip;</option>
+    <option value="">choose &hellip;</option>
     [% FOREACH role IN roles %]
-    <option value="[% role.id %]">[% role.role | html %]</option>
+      <option value="[% role.id %]">[% role.role | html %]</option>
     [% END %]
   </select>
   <div class="fieldinfo">
@@ -69,5 +69,4 @@
   <input type="hidden" name="action" value="[% action %]" />
   <input type="submit" id="submit" value="Save" />
   <br />
-
 </form>

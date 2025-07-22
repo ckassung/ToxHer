@@ -19,11 +19,11 @@ Catalyst Controller.
 
 =cut
 
-=head2 auto : Private
+=head2 auto :Private
 
 =cut
 
-sub auto : Private {
+sub auto :Private {
     my ($self, $c) = @_;
     $c->stash->{submenu} = 'locations/menu';
     return 1;
@@ -150,6 +150,25 @@ sub do_create :Local {
     });
 
     $c->res->redirect( $c->uri_for( '/locations/list' ) );
+}
+
+=head2 delete :Local
+
+Delete event and forward to list.
+
+=cut
+
+sub delete :Local {
+    my ( $self, $c, $id ) = @_;
+
+    if ( $c->stash->{item} = $c->model( 'DB::Location' )->find( $id ) ) {
+        $c->stash(status_msg => 'Location width id ' . $c->stash->{item}->id . ' has been removed.');
+        $c->stash->{item}->delete;
+    }
+    else {
+        $c->stash(error_msg => 'There is no location with this id.' );
+    }
+    $c->forward( 'list' );
 }
 
 =head2 validate :Private

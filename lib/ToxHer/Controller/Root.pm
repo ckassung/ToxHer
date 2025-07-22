@@ -75,7 +75,21 @@ sub auto :Private {
     return 1;
 }
 
+=head2 object_not_found :Private
+
+Display error message if object not found
+
+=cut
+
+sub object_not_found :Private {
+    my ($self, $c, $args) = @_;
+    $c->res->output('The requested object could not be found.');
+    $c->res->status(404);
+}
+
 =head2 default
+
+TODO: Testen, ob raus kann
 
 Standard 404 error page
 
