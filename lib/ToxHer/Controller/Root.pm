@@ -52,6 +52,8 @@ sub auto :Private {
     # added above.
     if ($c->controller eq $c->controller('Auth')) {
         return 1;
+    } elsif ($c->controller eq $c->controller('Maps')) {
+        return 1;
     }
 
     # If a user doesn't exist, force login

@@ -25,7 +25,10 @@ Catalyst Controller.
 
 sub auto :Private {
     my ($self, $c) = @_;
-    $c->stash->{submenu} = 'locations/menu';
+
+    if ($c->check_user_roles('admin')) {
+        $c->stash->{submenu} = 'locations/menu';
+    }
     return 1;
 }
 
@@ -35,6 +38,7 @@ sub auto :Private {
 
 sub default :Private {
     my ( $self, $c ) = @_;
+
     $c->forward( 'list' );
 }
 
@@ -46,6 +50,7 @@ Fetch all location objects and pass to locations/list.tt2 in stash to be display
 
 sub list :Local {
     my ( $self, $c ) = @_;
+
     $c->stash(
         list          => [ $c->model( 'DB::Location' )->search(undef, {
                             select => [
@@ -79,11 +84,29 @@ sub view :Local {
     my ( $self, $c, $id ) = @_;
 
     my $item = $c->model( 'DB::Location' )->find( $id );
-
     if ( !$item ) {
         $c->msg->store( 'There is no location with such an id.' );
         return $c->forward( 'list' );
     }
+
+    # location = artist
+    # event = cd
+    # SELECT location.*, event.title FROM location 
+    # JOIN event ON location.id = event.location_id 
+    # WHERE location_id = '1'
+    #
+    # SELECT artist.*, cd.title FROM arist
+    # JOIN cd ON artist.id = cd.artist_id
+    # WHERE artist_id = '1'
+
+
+    my $rs = $c->model( 'DB::Location' )->search(
+        { id => $id,
+        },
+        { join     => 'events',
+          prefetch => 'events', # return event data too
+        }
+    );
 
     my $address = $item->address;
     $address =~ /^([^0-9]+) ([0-9]+.*?)\, ([0-9]{5}) (.*)$/;
@@ -95,6 +118,7 @@ sub view :Local {
         houseno  => $houseno,
         zip      => $zip,
         city     => $city,
+        rs       => $rs,
         template => 'locations/view.tt2',
         title    => 'Show location\'s details',
     );

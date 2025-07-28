@@ -25,6 +25,7 @@ Catalyst Controller.
 
 sub default :Private {
     my ( $self, $c ) = @_;
+
     $c->forward( 'view' );
 }
 

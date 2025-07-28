@@ -3,7 +3,9 @@
 [% IF list.size > 0 %]
 <table width="100%" class="sortable">
   <tr>
+    [% IF c.check_user_roles('admin') %]
     <th class="nosort">&nbsp;</th>
+    [% END %]
     <th class="sortasc">Address</th>
     <th>Coordinates</th>
     <th>Rating</th>
@@ -11,11 +13,13 @@
   [% FOREACH item IN list %]
     <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
 item.deleted %]">
+      [% IF c.check_user_roles('admin') %]
       <td>
         <a href="#" onclick="window.open('[% base %]locations/view/[% item.id %]', 'location', 'width=800, scrollbar=yes'); return false;"><img src="[% base %]static/images/view.png" alt="View" title="View"></a>
         <a href="[% base %]locations/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
         <a href="[% base %]locations/delete/[% item.id %]" onclick="return confirm('Delete institution?')"><img src="[% base %]static/images/delete.png"></a>
       </td>
+      [% END %]
       <td>[% item.address | html %]</td>
       <td><a href="https://map.safecast.org/?y=[% item.get_column('lng')
                  %]&x=[% item.get_column('lat') %]"

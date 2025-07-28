@@ -28,7 +28,9 @@ Catalyst Controller.
 sub auto :Private {
     my ($self, $c) = @_;
 
-    $c->stash->{submenu} = 'events/menu';
+    if ($c->check_user_roles('admin')) {
+        $c->stash->{submenu} = 'events/menu';
+    }
     return 1;
 }
 

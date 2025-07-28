@@ -1,7 +1,15 @@
 <table>
   <tr class="listdarkbg">
-    <td>Street:</td>
-    <td>[% street | html %]</td>
+    <td>Address:</td>
+    <td>[% street %] [% houseno %], [% zip %] [% city %]</td>
+  </tr>
+  <tr class="listlightbg">
+    <td>Events:</td>
+    <td>
+    [% FOREACH event IN rs %]
+    &dnash; [% event %]<br />
+    [% END %]
+    </td>
   </tr>
   <tr class="listlightbg">
     <td>House no.:</td>
@@ -33,3 +41,6 @@
     </td>
   </tr>
 </table>
+
+[% USE Dumper %]
+[% Dumper.dump(rs) %]
