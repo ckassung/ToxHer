@@ -6,6 +6,7 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 use Geo::Parser::Text;
 use Data::Dumper;
+use Date::Manip;
 
 =head1 NAME
 
@@ -89,24 +90,7 @@ sub view :Local {
         return $c->forward( 'list' );
     }
 
-    # location = artist
-    # event = cd
-    # SELECT location.*, event.title FROM location 
-    # JOIN event ON location.id = event.location_id 
-    # WHERE location_id = '1'
-    #
-    # SELECT artist.*, cd.title FROM arist
-    # JOIN cd ON artist.id = cd.artist_id
-    # WHERE artist_id = '1'
-
-
-    my $rs = $c->model( 'DB::Location' )->search(
-        { id => $id,
-        },
-        { join     => 'events',
-          prefetch => 'events', # return event data too
-        }
-    );
+    my $events = $item->events; # is an object not a list: ->all needed
 
     my $address = $item->address;
     $address =~ /^([^0-9]+) ([0-9]+.*?)\, ([0-9]{5}) (.*)$/;
@@ -118,7 +102,8 @@ sub view :Local {
         houseno  => $houseno,
         zip      => $zip,
         city     => $city,
-        rs       => $rs,
+        events   => [$events->all],
+        popup    => 1,
         template => 'locations/view.tt2',
         title    => 'Show location\'s details',
     );

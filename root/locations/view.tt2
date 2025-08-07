@@ -1,27 +1,19 @@
 <table>
   <tr class="listdarkbg">
     <td>Address:</td>
-    <td>[% street %] [% houseno %], [% zip %] [% city %]</td>
+    <td>[% item.address %]</td>
   </tr>
   <tr class="listlightbg">
     <td>Events:</td>
     <td>
-    [% FOREACH event IN rs %]
-    &dnash; [% event %]<br />
-    [% END %]
+      <ul>
+      [%- USE date -%]
+      [%- manip = date.manip -%]
+      [% FOREACH event IN events %]
+        <li>[% manip.UnixDate( event.pubdate, "%e %b %Y" ) %]: [% event.title %]
+      [% END %]
+      </ul>
     </td>
-  </tr>
-  <tr class="listlightbg">
-    <td>House no.:</td>
-    <td>[% houseno | html %]</td>
-  </tr>
-  <tr class="listdarkbg">
-    <td>ZIP:</td>
-    <td>[% zip | html %]</td>
-  </tr>
-  <tr class="listlightbg">
-    <td>City:</td>
-    <td>[% city | html %]</td>
   </tr>
   <tr class="listdarkbg">
     <td>Rating:</td>
@@ -41,6 +33,3 @@
     </td>
   </tr>
 </table>
-
-[% USE Dumper %]
-[% Dumper.dump(rs) %]

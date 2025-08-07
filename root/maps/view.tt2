@@ -1,16 +1,29 @@
 <h2>Map of all documented events</h2>
 
-<div id="map" class="ov-map"></div>
+<div id="map" class="map"></div>
+<div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
+</div>
+
 <script type="text/javascript">
-    const locations = [
-        [% FOREACH location IN locations %]
-            ['[% base %]locations/view/[% location.id %]', [% location.longitude %] , [% location.latitude %] , '[%
-              location.address %]'],    
-        [% END %]
+    const Model = [
+        [%- USE String %]
+        [%- USE cblh = String '{' %]
+        [%- USE cbrh = String '}' %]
+        [%- FOREACH location IN locations %]
+            [% cblh %]
+            id: [% location.id %], 
+            long: [% location.longitude %], 
+            lat: [% location.latitude %], 
+            address: '[% location.address %]',
+            [% cbrh %],
+        [%- END -%]
     ];
-    var x = 13.2552372718261;                                                       
-    var y = 52.7511572566098; 
+    var x = 13.2552372718261;
+    var y = 52.7511572566098;
     var z = 15;
     var marker = '[% base %]static/images/marker.png';
 </script>
-<script type="module" src="[% base %]static/jss/overview.js"></script>
+
+<script src="[% base %]static/jss/overview.js"></script>

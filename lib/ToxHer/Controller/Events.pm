@@ -123,8 +123,7 @@ sub view :Local {
         item         => $item,
         location     => $item->location,
         template     => 'events/view.tt2',
-        # TODO: popup window _blank
-        # popup    => 1,
+        popup        => 1,
         title        => 'Show event\'s details',
     );
 }

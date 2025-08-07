@@ -17,6 +17,7 @@ requires 'Catalyst::Plugin::StackTrace'; # to be deleted when app in production
 requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Plugin::Authentication';
 requires 'Catalyst::Plugin::Authorization::Roles';
+requires 'Catalyst::Authentication::Realm::SimpleDB';
 requires 'Catalyst::Plugin::Session';
 requires 'Catalyst::Plugin::Session::Store::File';
 requires 'Catalyst::Plugin::Session::State::Cookie';

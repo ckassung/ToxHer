@@ -37,9 +37,17 @@ sub view :Local {
     my ( $self, $c ) = @_;
 
     $c->stash(
-        locations     => [ $c->model( 'DB::Location' )->search({}, {order_by => 'address ASC'}) ],
-        template      => 'maps/view.tt2',
-        title         => 'Maps',
+        locations => [ $c->model( 'DB::Location' )->search(
+            undef, 
+            {
+                order_by => 'address ASC',
+                # prefetch => 'location_events',
+            },
+        )],
+        # TODO
+        events    => { map { $_->id => $_->events } $c->model( 'DB::Location' )->all },
+        template  => 'maps/view.tt2',
+        title     => 'Maps',
     );
 }
 
