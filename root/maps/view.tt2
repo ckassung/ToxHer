@@ -7,19 +7,22 @@
 </div>
 
 <script type="text/javascript">
-    const Model = [
-        [%- USE String %]
-        [%- USE cblh = String '{' %]
-        [%- USE cbrh = String '}' %]
-        [%- FOREACH location IN locations %]
-            [% cblh %]
-            id: [% location.id %], 
-            long: [% location.longitude %], 
-            lat: [% location.latitude %], 
-            address: '[% location.address %]',
-            [% cbrh %],
-        [%- END -%]
+    const Marker = [
+        [%- FOREACH marker IN markers -%]
+        {
+            id: [% marker.id %],
+            long: [% marker.long %],
+            lat: [% marker.lat %],
+            address: '[% marker.address %]',
+            events: {
+                [%- FOREACH event IN marker.events.keys -%]
+                [% event %]: '[% marker.events.$event %]',
+                [%- END -%]
+            },
+        },
+    [%- END -%]
     ];
+
     var x = 13.2552372718261;
     var y = 52.7511572566098;
     var z = 15;

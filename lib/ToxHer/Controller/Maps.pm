@@ -6,6 +6,7 @@ BEGIN { extends 'Catalyst::Controller'; }
 
 use Geo::Parser::Text;
 use Data::Dumper;
+use Time::Piece;
 
 =head1 NAME
 
@@ -36,18 +37,45 @@ sub default :Private {
 sub view :Local {
     my ( $self, $c ) = @_;
 
+    # Fetch locations and their associated events
+    my $locations = $c->model( 'DB::Location' )->search(
+        {},
+        {
+            prefetch => 'events',
+            # order_by => 'id',
+        }
+    );
+
+    # Prepare data for the view
+    my @markers;
+    while (my $location = $locations->next) {
+        my %marker = (
+            id      => $location->id,
+            long    => $location->longitude,
+            lat     => $location->latitude,
+            address => $location->address,
+            events  => {},
+        );
+
+        my $events = $location->events;
+        my $event_count = 1;
+        while (my $event = $events->next) {
+            my $event_date = $event->pubdate;
+            my $dtime = Time::Piece->strptime($event_date, "%Y-%m-%dT%T");
+            $event_date = $dtime->strftime("%d %b %Y");
+            my $event_title = $event->title;
+            $marker{events}->{"event$event_count"} = "$event_date: $event_title";
+            $event_count++;
+        }
+
+        push @markers, \%marker;
+    }
+
+    # Pass data and render the view
     $c->stash(
-        locations => [ $c->model( 'DB::Location' )->search(
-            undef, 
-            {
-                order_by => 'address ASC',
-                # prefetch => 'location_events',
-            },
-        )],
-        # TODO
-        events    => { map { $_->id => $_->events } $c->model( 'DB::Location' )->all },
-        template  => 'maps/view.tt2',
-        title     => 'Maps',
+        markers  => \@markers,
+        template => 'maps/view.tt2',
+        title    => 'Maps',
     );
 }
 

@@ -46,14 +46,15 @@ const map = new ol.Map({
 });
 
 const features = [];
-for (key in Model)
+for (key in Marker)
 {
-  const _Data = Model[key];
+  const _Data = Marker[key];
   const feature = new ol.Feature({
     geometry: new ol.geom.Point(
       ol.proj.fromLonLat([parseFloat(_Data.long), parseFloat(_Data.lat)])
     ),
     address: _Data.address,
+    events: _Data.events,
   });
   features.push(feature);
 }
@@ -77,9 +78,16 @@ map.on('click', function (evt) {
     return feature;
   });
   if (feature) {
+    const address = feature.get('address');
+    const events = feature.get('events');
+    let eventList = '<ul>';
+    for (const eventKey in events) {
+        eventList += `<li>${events[eventKey]}</li>`;
+    }
+    eventList += '</ul>';
     const coordinates = feature.getGeometry().getCoordinates();
-    content.innerHTML =
-      '<p>Address:</p><code>' + feature.get('address') + '</code>'
+    content.innerHTML = 
+      `<p>Address: ${address}</p>${eventList}`
     overlay.setPosition(coordinates);
   }
 });
