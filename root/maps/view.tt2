@@ -23,9 +23,9 @@
     [%- END -%]
     ];
 
-    var x = 13.2552372718261;
-    var y = 52.7511572566098;
-    var z = 15;
+    var x = 13.2452;
+    var y = 52.7511;
+    var z = 14;
     var marker = '[% base %]static/images/marker.png';
 </script>
 

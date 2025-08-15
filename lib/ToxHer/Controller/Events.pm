@@ -178,7 +178,7 @@ sub do_create :Local {
         location_id  => $location,
     });
 
-    $c->msg->store('New event with title "' . $item->title . '" has been filed.');
+    $c->stash(status_msg => 'New event with title "' . $item->title . ' has been filed.');
     $c->res->redirect( $c->uri_for( '/events/list' ) );
 }
 
@@ -208,7 +208,7 @@ sub edit :Local {
         $c->stash->{form}->{pubdate} = UnixDate( $c->stash->{item}->pubdate, "%d.%m.%Y" );
     }
     else {
-        $c->msg->store( 'There is no event with such an id.' );
+        $c->stash(error_msg => 'There is no event with such an id.' );
         $c->forward( 'list' );
     }
 }
@@ -225,7 +225,7 @@ sub do_edit :Local {
     $c->stash->{action} = 'edit';
 
     unless ( $c->stash->{item} = $c->model( 'DB::Event' )->find( $id ) ) {
-        $c->msg->store('There is no event with such an id.');
+        $c->stash->(error_msg => 'There is no event with such an id.');
         return $c->forward( 'edit' );
     }
 
@@ -246,7 +246,7 @@ sub do_edit :Local {
         $c->stash->{item}->location_id( $location );
         $c->stash->{item}->update;
 
-        $c->msg->store('Data for event with title "' . $c->stash->{item}->title . '" has been changed.');
+        $c->stash->(status_msg => 'Data for event with title "' . $c->stash->{item}->title . '" has been changed.');
         $c->res->redirect( $c->uri_for( '/events/list' ) );
     }
     else {

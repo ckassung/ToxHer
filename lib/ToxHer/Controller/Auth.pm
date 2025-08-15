@@ -4,12 +4,6 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller'; }
 
-#
-# Sets the actions in this controller to be registered with no prefix
-# so they function identically to actions created in MyApp.pm
-#
-__PACKAGE__->config(namespace => '');
-
 =head1 NAME
 
 ToxHer::Controller::Auth - Catalyst Controller
@@ -76,7 +70,7 @@ sub logout :Path('/auth/logout') {
     $c->response->redirect($c->uri_for('/'));
 }
 
-=head2 denied : Private
+=head2 denied :Private
 
 TODO
 

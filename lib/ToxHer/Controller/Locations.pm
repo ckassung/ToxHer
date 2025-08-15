@@ -86,7 +86,7 @@ sub view :Local {
 
     my $item = $c->model( 'DB::Location' )->find( $id );
     if ( !$item ) {
-        $c->msg->store( 'There is no location with such an id.' );
+        $c->stash->(error_msg => 'There is no location with such an id.' );
         return $c->forward( 'list' );
     }
 

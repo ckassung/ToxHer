@@ -21,11 +21,12 @@ item.deleted %]">
       </td>
       [% END %]
       <td>[% item.address | html %]</td>
-      <td><a href="https://map.safecast.org/?y=[% item.get_column('lng')
-                 %]&x=[% item.get_column('lat') %]"
+      <td><a href="https://map.safecast.org/?y=[% item.get_column('lat')
+                 %]&x=[% item.get_column('lng') %]&z=15"
              target="_blank">Safecast</a> | <a
-             href="https://geohack.toolforge.org/geohack.php?language=de&params=[% item.get_column('lng')
-                 %]_N_[% item.get_column('lat') %]_E_dim:28300"
+             href="https://geohack.toolforge.org/geohack.php?language=de&params=[%
+                   item.get_column('lat')
+                 %]_N_[% item.get_column('lng') %]_E_dim:28300"
              target="_blank">GeoHack</a></td>
       <td>[% IF item.rating > 0 %][% FOREACH i IN [1 .. item.rating ] %]*[% END %][% END %]</td>
     </tr>
