@@ -3,7 +3,7 @@
   <label for="street">Street:</label>
   <input type="text" id="street" name="street" [% fb %]/>
   <div class="fieldinfo">
-    <span class="help">Format: street name, house number</span><br />
+    <span class="help">Format: street name house number</span><br />
     [% form_error('street') %]
   </div>
   <br />
@@ -15,6 +15,24 @@
     [% form_error('city') %]
   </div>
   <br />
+
+  [% IF action == 'edit' %]
+  <label for="lng">Longitude:</label>
+  <input type="text" id="lng" name="lng" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">Format: longitude</span><br />
+    [% form_error('lng') %]
+  </div>
+  <br />
+
+  <label for="lat">Latitude:</label>
+  <input type="text" id="lat" name="lat" [% fb %]/>
+  <div class="fieldinfo">
+    <span class="help">Format: latitude</span><br />
+    [% form_error('lat') %]
+  </div>
+  <br />
+  [% END %]
 
   <label for="rating">Rating:</label>
   <input type="text" class="small" id="rating" name="rating"/>

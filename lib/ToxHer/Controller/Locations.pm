@@ -161,6 +161,82 @@ sub do_create :Local {
     $c->res->redirect( $c->uri_for( '/locations/list' ) );
 }
 
+=head2 edit :Local
+
+Display form for editing an event.
+
+=cut
+
+sub edit :Local {
+    my ( $self, $c, $id ) = @_;
+
+    if ( $c->stash->{item} = $c->model( 'DB::Location' )->find( $id ) ) {
+
+        my $address = $c->stash->{item}->address;
+        # $address =~ /^([^0-9]+) ([0-9]+.*?)\, ([0-9]{5}) (.*)$/;
+        $address =~ /^([^0-9]+)\s*([0-9]*.*?)\,\s*([0-9]{5})\s*(.*)$/;
+        my ($street, $houseno, $zip, $city) = ($1, $2, $3, $4);
+
+        $c->stash(
+            content_class => 'medium',
+            action   => 'edit',
+            form     => {
+                street  => $street . ' ' . $houseno,
+                city    => $zip . ' ' . $city,
+                lng     => $c->stash->{item}->longitude,
+                lat     => $c->stash->{item}->latitude,
+                rating  => $c->stash->{item}->rating,
+            },
+            template  => 'locations/form.tt2',
+            title     => 'Edit location',
+        );
+    }
+    else {
+        $c->stash(error_msg => 'There is no location with such an id.' );
+        $c->forward( 'list' );
+    }
+}
+
+=head2 do_edit :Local
+
+Take information from form and change entry of database.
+
+=cut
+
+sub do_edit :Local {
+    my ( $self, $c, $id ) = @_;
+
+    $c->stash->{action} = 'edit';
+
+    unless ( $c->stash->{item} = $c->model( 'DB::Location' )->find( $id ) ) {
+        $c->stash->(error_msg => 'There is no location with such an id.');
+        return $c->forward( 'edit' );
+    }
+
+    # Retrieve address from form
+    my $street = $c->request->params->{street};
+    my $city   = $c->request->params->{city};
+    # TODO Leerzeichen werden mehr
+    my $address = $street . ', ' . $city;
+
+    $c->forward( 'validate' );
+
+    unless ( $c->form->has_missing || $c->form->has_invalid ) {
+        $c->stash->{item}->address( $address );
+        $c->stash->{item}->longitude( scalar $c->form->valid( 'lng' ) );
+        $c->stash->{item}->latitude( scalar $c->form->valid( 'lat' ) );
+        $c->stash->{item}->rating( scalar $c->form->valid( 'rating' ) );
+        $c->stash->{item}->update;
+
+        # TODO Perl Error “Not a CODE reference …”
+        # $c->stash->(status_msg => 'Data for location with address "' . $address . '" has been changed.');
+        $c->res->redirect( $c->uri_for( '/locations/list' ) );
+    }
+    else {
+       $c->detach('edit');
+    }
+}
+
 =head2 delete :Local
 
 Delete event and forward to list.
@@ -190,7 +266,7 @@ sub validate :Private {
     my $dfv = {
         filters  => 'trim',
         required => [qw(street city)],
-        optional => [qw(rating)],
+        optional => [qw(lat lng rating)],
     };
     $c->form($dfv);
 }
