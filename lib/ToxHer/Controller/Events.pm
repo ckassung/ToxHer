@@ -137,6 +137,8 @@ Display form to collect information for event to create.
 sub create :Local {
     my ( $self, $c ) = @_;
 
+    # $c->detach('/auth/denied') unless $c->check_user_roles('admin');
+
     $c->stash(
         content_class => 'medium',
         action        => 'create',
@@ -190,6 +192,8 @@ Display form for editing an event.
 
 sub edit :Local {
     my ( $self, $c, $id ) = @_;
+
+    $c->detach('/auth/denied') unless $c->check_user_roles('admin');
 
     if ( $c->stash->{item} = $c->model( 'DB::Event' )->find( $id ) ) {
         $c->stash(
@@ -262,6 +266,8 @@ Delete event and forward to list.
 
 sub delete :Local {
     my ( $self, $c, $id ) = @_;
+
+    $c->detach('/auth/denied') unless $c->check_user_roles('admin');
 
     if ( $c->stash->{item} = $c->model( 'DB::Event' )->find( $id ) ) {
         $c->stash(status_msg => 'Event "' . $c->stash->{item}->title . '" has been removed.');

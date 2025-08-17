@@ -3,9 +3,7 @@
 [% IF list.size > 0 %]
 <table width="100%" class="sortable">
   <tr>
-    [% IF c.check_user_roles('admin') %]
-    <th class="nosort">&nbsp;</th>
-    [% END %]
+    <th class="nosort">Action</th>
     <th class="sortasc">Date</th>
     <th class="sortasc">Title</th>
     <th class="nosort">Source</th>
@@ -15,13 +13,13 @@
   [%- manip = date.manip -%]
   <tr class="list[% loop.count % 2 ? 'dark' : 'light' %]bg[% ' deleted' IF
 item.deleted %]">
-    [% IF c.check_user_roles('admin') %]
     <td>
       <a href="#" onclick="window.open('[% base %]events/view/[% item.id %]', 'event', 'width=600,height=800,scrollbar=yes'); return false;"><img src="[% base %]static/images/view.png" alt="View" title="View"></a>
+      [% IF c.check_user_roles('admin') %]
       <a href="[% base %]events/edit/[% item.id %]"><img src="[% base %]static/images/edit.png"></a>
       <a href="[% base %]events/delete/[% item.id %]" onclick="return confirm('Delete event?')"><img src="[% base %]static/images/delete.png"></a>
+      [% END %]
     </td>
-    [% END %]
     <td>[% manip.UnixDate( item.pubdate, "%e %b %Y" ) %]</td>
     <td>[% item.title | html %]</td>
     <td>[% item.source %]</td>

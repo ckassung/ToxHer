@@ -4,10 +4,8 @@ use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller' }
 
-#
 # Sets the actions in this controller to be registered with no prefix
 # so they function identically to actions created in MyApp.pm
-#
 __PACKAGE__->config(namespace => '');
 
 =head1 NAME
@@ -20,7 +18,7 @@ Catalyst Controller.
 
 =head1 METHODS
 
-=head2 index :Path :Args(0)
+=head2 index :Private
 
 The root page (/)
 
@@ -29,9 +27,10 @@ The root page (/)
 # sub index :Path :Args(0) {
 sub index :Private {
     my ( $self, $c ) = @_;
+
     $c->stash(
-        template      => 'start.tt2',
-        title         => 'Welcome to ToxHer',
+        template => 'start.tt2',
+        title    => 'Welcome to ToxHer',
     );
 }
 

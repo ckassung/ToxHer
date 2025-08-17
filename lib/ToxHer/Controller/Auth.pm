@@ -32,9 +32,10 @@ sub login :Path('/auth/login') {
         # Attempt to log the user in
         if ($c->authenticate({ username => $username,
                                password => $password  } )) {
-            # If successful, process to application
-            $c->response->redirect($c->uri_for(
-                $c->controller('Events')->action_for('list')));
+            # If successful, sent back to the start page
+            $c->response->redirect($c->uri_for('/'));
+            # $c->response->redirect($c->uri_for(
+            #     $c->controller('Events')->action_for('list')));
             return;
         } else {
             # Stay at login form and set error message
@@ -42,8 +43,10 @@ sub login :Path('/auth/login') {
         }
     } else {
         # Set an error message
-        $c->stash(error_msg => "Empty username or password.")
-            unless ($c->user_exists);
+        if ( $c->req->param('want-auth') && !$c->user ) {
+            $c->stash(error_msg => "Empty username or password.")
+            # unless ($c->user_exists);
+        }
     }
 
     # If either of above don't work out, send to the login page
